@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Berat Badan Ideal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .result-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .method-card {
+            transition: all 0.3s ease;
+        }
+        .method-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.15);
+        }
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.5);
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+        .whatsapp-menu {
+            position: fixed;
+            bottom: 120px;
+            right: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 300px;
+            z-index: 99;
+            transform: scale(0);
+            opacity: 0;
+            transition: all 0.3s ease;
+            transform-origin: bottom right;
+        }
+        .whatsapp-menu.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .cs-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .cs-option:hover {
+            background-color: #f0f9ff;
+            transform: translateX(5px);
+        }
+        .cs-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            animation: bounce 1.5s infinite;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-8px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">⚖️ Kalkulator Berat Badan Ideal</h1>
+            <p class="text-white/80 text-lg">Hitung berat badan ideal Anda dengan berbagai metode perhitungan</p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="bg-white rounded-2xl card-shadow p-8 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">📊 Data Pribadi</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tinggi Badan (cm)</label>
+                    <input type="number" id="height" placeholder="Contoh: 170" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Berat Badan Saat Ini (kg)</label>
+                    <input type="number" id="currentWeight" placeholder="Contoh: 65" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin</label>
+                    <select id="gender" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                        <option value="">Pilih jenis kelamin</option>
+                        <option value="male">Laki-laki</option>
+                        <option value="female">Perempuan</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Umur (tahun)</label>
+                    <input type="number" id="age" placeholder="Contoh: 25" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                </div>
+            </div>
+            
+            <button onclick="calculateIdealWeight()" 
+                    class="w-full mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105">
+                🧮 Hitung Berat Badan Ideal
+            </button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="hidden">
+            <!-- BMI Status -->
+            <div id="bmiStatus" class="bg-white rounded-2xl card-shadow p-6 mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">📈 Status BMI Anda</h3>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">BMI Anda:</p>
+                        <p id="bmiValue" class="text-2xl font-bold text-purple-600"></p>
+                    </div>
+                    <div id="bmiCategory" class="px-4 py-2 rounded-full text-sm font-medium"></div>
+                </div>
+            </div>
+
+            <!-- Calculation Methods -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Broca Method -->
+                <div class="method-card bg-white rounded-2xl card-shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">🔢 Metode Broca</h3>
+                    <p class="text-sm text-gray-600 mb-4">Metode klasik berdasarkan tinggi badan</p>
+                    <div class="text-center">
+                        <p id="brocaResult" class="text-3xl font-bold text-blue-600 mb-2"></p>
+                        <p class="text-sm text-gray-500">kg</p>
+                    </div>
+                </div>
+
+                <!-- BMI Method -->
+                <div class="method-card bg-white rounded-2xl card-shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 Metode BMI</h3>
+                    <p class="text-sm text-gray-600 mb-4">Berdasarkan BMI ideal (22.5)</p>
+                    <div class="text-center">
+                        <p id="bmiResult" class="text-3xl font-bold text-green-600 mb-2"></p>
+                        <p class="text-sm text-gray-500">kg</p>
+                    </div>
+                </div>
+
+                <!-- Robinson Method -->
+                <div class="method-card bg-white rounded-2xl card-shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">👤 Metode Robinson</h3>
+                    <p class="text-sm text-gray-600 mb-4">Berdasarkan jenis kelamin dan tinggi</p>
+                    <div class="text-center">
+                        <p id="robinsonResult" class="text-3xl font-bold text-purple-600 mb-2"></p>
+                        <p class="text-sm text-gray-500">kg</p>
+                    </div>
+                </div>
+
+                <!-- Miller Method -->
+                <div class="method-card bg-white rounded-2xl card-shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">⚖️ Metode Miller</h3>
+                    <p class="text-sm text-gray-600 mb-4">Formula Miller yang disempurnakan</p>
+                    <div class="text-center">
+                        <p id="millerResult" class="text-3xl font-bold text-orange-600 mb-2"></p>
+                        <p class="text-sm text-gray-500">kg</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="result-card rounded-2xl card-shadow p-8 mt-6 text-white">
+                <h3 class="text-2xl font-bold mb-4">🎯 Ringkasan Hasil</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-white/80 mb-2">Rata-rata Berat Ideal:</p>
+                        <p id="averageWeight" class="text-4xl font-bold"></p>
+                    </div>
+                    <div>
+                        <p class="text-white/80 mb-2">Selisih dengan Berat Sekarang:</p>
+                        <p id="weightDifference" class="text-2xl font-semibold"></p>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-white/20 rounded-lg">
+                    <p id="recommendation" class="text-sm"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Customer Service -->
+    <div class="whatsapp-float" onclick="toggleWhatsAppMenu()">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.63"/>
+            </svg>
+        </div>
+        <!-- Notification Badge -->
+        <div class="notification-badge">!</div>
+    </div>
+
+    <div id="whatsappMenu" class="whatsapp-menu">
+        <div class="text-center mb-4">
+            <h3 class="font-bold text-gray-800 text-lg">💬 Customer Service</h3>
+            <p class="text-sm text-gray-600">Pilih CS yang tersedia</p>
+        </div>
+        
+        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20konsultasi%20tentang%20berat%20badan%20ideal" 
+           class="cs-option" target="_blank">
+            <div class="cs-avatar">👨‍⚕️</div>
+            <div class="flex-1">
+                <div class="font-semibold text-gray-800">Dr. Ahmad</div>
+                <div class="text-sm text-gray-600">Konsultan Gizi</div>
+                <div class="flex items-center mt-1">
+                    <div class="online-indicator"></div>
+                    <span class="text-xs text-green-600 ml-2">Online</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://wa.me/6281234567891?text=Halo,%20saya%20butuh%20bantuan%20dengan%20kalkulator%20BMI" 
+           class="cs-option" target="_blank">
+            <div class="cs-avatar">👩‍💼</div>
+            <div class="flex-1">
+                <div class="font-semibold text-gray-800">Sari</div>
+                <div class="text-sm text-gray-600">Support Teknis</div>
+                <div class="flex items-center mt-1">
+                    <div class="online-indicator"></div>
+                    <span class="text-xs text-green-600 ml-2">Online</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://wa.me/6281234567892?text=Halo,%20saya%20ingin%20program%20diet%20yang%20tepat" 
+           class="cs-option" target="_blank">
+            <div class="cs-avatar">🏃‍♀️</div>
+            <div class="flex-1">
+                <div class="font-semibold text-gray-800">Maya</div>
+                <div class="text-sm text-gray-600">Pelatih Fitness</div>
+                <div class="flex items-center mt-1">
+                    <div class="online-indicator"></div>
+                    <span class="text-xs text-green-600 ml-2">Online</span>
+                </div>
+            </div>
+        </a>
+
+        <div class="text-center mt-4 pt-3 border-t border-gray-200">
+            <p class="text-xs text-gray-500">Jam operasional: 08:00 - 22:00 WIB</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateIdealWeight() {
+            const height = parseFloat(document.getElementById('height').value);
+            const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+            const gender = document.getElementById('gender').value;
+            const age = parseFloat(document.getElementById('age').value);
+
+            // Validation
+            if (!height || !currentWeight || !gender || !age) {
+                alert('Mohon lengkapi semua data terlebih dahulu!');
+                return;
+            }
+
+            if (height < 100 || height > 250) {
+                alert('Tinggi badan harus antara 100-250 cm');
+                return;
+            }
+
+            if (currentWeight < 20 || currentWeight > 300) {
+                alert('Berat badan harus antara 20-300 kg');
+                return;
+            }
+
+            // Calculate BMI
+            const heightInM = height / 100;
+            const bmi = currentWeight / (heightInM * heightInM);
+
+            // BMI Status
+            let bmiCategory, bmiColor;
+            if (bmi < 18.5) {
+                bmiCategory = 'Kurus';
+                bmiColor = 'bg-blue-100 text-blue-800';
+            } else if (bmi < 25) {
+                bmiCategory = 'Normal';
+                bmiColor = 'bg-green-100 text-green-800';
+            } else if (bmi < 30) {
+                bmiCategory = 'Gemuk';
+                bmiColor = 'bg-yellow-100 text-yellow-800';
+            } else {
+                bmiCategory = 'Obesitas';
+                bmiColor = 'bg-red-100 text-red-800';
+            }
+
+            // Calculate ideal weights using different methods
+            
+            // 1. Broca Method
+            const brocaWeight = height - 100;
+
+            // 2. BMI Method (ideal BMI = 22.5)
+            const bmiIdealWeight = 22.5 * heightInM * heightInM;
+
+            // 3. Robinson Method
+            let robinsonWeight;
+            if (gender === 'male') {
+                robinsonWeight = 52 + (1.9 * ((height - 152.4) / 2.54));
+            } else {
+                robinsonWeight = 49 + (1.7 * ((height - 152.4) / 2.54));
+            }
+
+            // 4. Miller Method
+            let millerWeight;
+            if (gender === 'male') {
+                millerWeight = 56.2 + (1.41 * ((height - 152.4) / 2.54));
+            } else {
+                millerWeight = 53.1 + (1.36 * ((height - 152.4) / 2.54));
+            }
+
+            // Calculate average
+            const averageWeight = (brocaWeight + bmiIdealWeight + robinsonWeight + millerWeight) / 4;
+            const weightDifference = currentWeight - averageWeight;
+
+            // Update UI
+            document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+            document.getElementById('bmiCategory').textContent = bmiCategory;
+            document.getElementById('bmiCategory').className = `px-4 py-2 rounded-full text-sm font-medium ${bmiColor}`;
+
+            document.getElementById('brocaResult').textContent = brocaWeight.toFixed(1);
+            document.getElementById('bmiResult').textContent = bmiIdealWeight.toFixed(1);
+            document.getElementById('robinsonResult').textContent = robinsonWeight.toFixed(1);
+            document.getElementById('millerResult').textContent = millerWeight.toFixed(1);
+
+            document.getElementById('averageWeight').textContent = averageWeight.toFixed(1) + ' kg';
+            
+            const diffText = weightDifference > 0 ? 
+                `+${weightDifference.toFixed(1)} kg (kelebihan)` : 
+                `${weightDifference.toFixed(1)} kg (kekurangan)`;
+            document.getElementById('weightDifference').textContent = diffText;
+
+            // Recommendation
+            let recommendation;
+            if (Math.abs(weightDifference) <= 2) {
+                recommendation = '🎉 Selamat! Berat badan Anda sudah ideal. Pertahankan pola hidup sehat Anda.';
+            } else if (weightDifference > 2) {
+                recommendation = '📉 Disarankan untuk menurunkan berat badan dengan diet seimbang dan olahraga teratur.';
+            } else {
+                recommendation = '📈 Disarankan untuk menambah berat badan dengan pola makan bergizi dan olahraga yang tepat.';
+            }
+            document.getElementById('recommendation').textContent = recommendation;
+
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // WhatsApp Menu Toggle
+        let whatsappMenuOpen = false;
+        
+        function toggleWhatsAppMenu() {
+            const menu = document.getElementById('whatsappMenu');
+            whatsappMenuOpen = !whatsappMenuOpen;
+            
+            if (whatsappMenuOpen) {
+                menu.classList.add('show');
+            } else {
+                menu.classList.remove('show');
+            }
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('whatsappMenu');
+            const button = document.querySelector('.whatsapp-float');
+            
+            if (!menu.contains(e.target) && !button.contains(e.target)) {
+                menu.classList.remove('show');
+                whatsappMenuOpen = false;
+            }
+        });
+
+        // Add enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateIdealWeight();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d4564b0383a2fd',t:'MTc1NDg3OTcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
